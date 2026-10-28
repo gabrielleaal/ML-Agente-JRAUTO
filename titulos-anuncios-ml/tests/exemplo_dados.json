@@ -1,0 +1,38 @@
+﻿{
+  "64265": {
+    "titulo": "Radiador Água Palio Siena Idea 1.0 1.4 1.8 2001 A 2017",
+    "nome": "Radiador de Água Euro RA32540",
+    "sobre": ["O radiador é o componente do sistema de arrefecimento responsável por trocar o calor do líquido que circula pelo motor com o ar externo, mantendo a temperatura de trabalho ideal. Quando ele está entupido, furado ou com aletas danificadas, o motor superaquece e pode sofrer danos graves, como a queima da junta do cabeçote.", "Fabricado com colmeia em alumínio e tanques em plástico de alta resistência, segue o padrão de encaixe do original, sem necessidade de adaptações."],
+    "conteudo_embalagem": ["1 radiador de água (não acompanha tampa nem cebolão)"],
+    "sinais_troca": ["Superaquecimento do motor", "Vazamento de líquido de arrefecimento"],
+    "dicas": ["Substitua o líquido de arrefecimento na troca do radiador"],
+    "original": false,
+    "especificacoes": ["Sem cebolão", "Sem tampa"],
+    "codigos_ref": ["Euro RA32540", "Valeo 732353R"],
+    "aplicacao": ["Fiat Palio 1.0 2001 a 2017", "Fiat Siena 1.0 2001 a 2013"],
+    "fonte_aplicacao": "fabricante",
+    "link_aplicacao": "https://exemplo.com/ra32540",
+    "peca": {"largura": "51,5", "altura": 37.8, "profundidade": 11, "peso": null},
+    "embalagem": {"largura": 48, "altura": 11.6, "profundidade": 66.7, "peso": 2690},
+    "fonte_medidas_peca": "fabricante",
+    "fonte_medidas_embalagem": "estimado",
+    "link_medidas": "",
+    "alertas": []
+  },
+  "32803": {
+    "titulo": "Correia Dentada CT488 Uno Palio Mobi Siena 1.0 2010 A 2020",
+    "nome": "Correia Dentada Contitech CT488",
+    "original": false,
+    "especificacoes": ["129 dentes"],
+    "codigos_ref": ["Contitech CT488"],
+    "aplicacao": [],
+    "fonte_aplicacao": "",
+    "link_aplicacao": "",
+    "peca": {"largura": 2.2, "altura": null, "profundidade": null, "peso": 120},
+    "embalagem": {"largura": 24, "altura": 3, "profundidade": 27, "peso": 206},
+    "fonte_medidas_peca": "estimado",
+    "fonte_medidas_embalagem": "estimado",
+    "link_medidas": "",
+    "alertas": []
+  }
+}
