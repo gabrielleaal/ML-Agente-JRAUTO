@@ -155,6 +155,21 @@ class TestEntrada(unittest.TestCase):
             self.assertEqual(achar_coluna_codigo(cab), "sku")
             self.assertEqual(linhas[0]["nome"], "Filtro")
 
+    def test_ler_relatorio_autcom(self):
+        # relatório Curva ABC do Autcom: filtros antes da tabela
+        with tempfile.TemporaryDirectory() as tmp:
+            p = os.path.join(tmp, "e.csv")
+            with open(p, "w", encoding="cp1252", newline="") as f:
+                f.write("JR AUTO PECAS - MATRIZ\r\n\r\nMarca : 000012-COBREQ\r\n"
+                        "Produto : TODOS\r\n\r\n"
+                        "CÓDIGO;DESCRIÇÃO DO PRODUTO;LOC.FÍSICA;MARCA;QTD.ESTQ;VLR. ESTQ\r\n"
+                        '"27904";"PASTILHA FR AGILE";"G 0229";"COBREQ";1,00;42,57\r\n')
+            cab, linhas = ler_csv(p)
+            self.assertEqual(achar_coluna_codigo(cab), "CÓDIGO")
+            self.assertEqual(len(linhas), 1)
+            self.assertEqual(linhas[0]["CÓDIGO"], "27904")
+            self.assertEqual(colunas_mantidas(cab), ["CÓDIGO", "MARCA", "LOC.FÍSICA", "QTD.ESTQ"])
+
     def test_sem_coluna_codigo(self):
         with self.assertRaises(ValueError):
             achar_coluna_codigo(["nome", "preço"])
