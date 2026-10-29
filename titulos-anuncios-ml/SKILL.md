@@ -1,11 +1,11 @@
 ---
 name: titulos-anuncios-ml
-description: Cria título e descrição de anúncios NOVOS do Mercado Livre da JR Auto Peças a partir de um CSV de produtos (inclusive relatórios do Autcom, como a Curva ABC), no padrão da loja, pesquisando a compatibilidade de veículos (aplicação) e as medidas da peça e da embalagem, e devolve uma planilha CSV pronta para subir no Hub. Também gera no Syntra Images o kit de fotos de anúncio de cada produto, confere, e baixa as fotos para o computador já renomeadas no padrão do Hub (SKU-2, SKU-3...). Use sempre que mandarem um CSV de produtos para cadastrar, pedirem títulos ou descrições de anúncios, "criar anúncios novos", "planilha para o Hub" ou cadastro de produtos no ML.
+description: Cria título e descrição de anúncios NOVOS do Mercado Livre da JR Auto Peças a partir de um CSV de produtos (inclusive relatórios do Autcom, como a Curva ABC), no padrão da loja, pesquisando a compatibilidade de veículos (aplicação) e as medidas da peça e da embalagem, e devolve uma planilha CSV pronta para subir no Hub. Também gera no Syntra Images o kit de fotos de anúncio de cada produto e confere. Use sempre que mandarem um CSV de produtos para cadastrar, pedirem títulos ou descrições de anúncios, "criar anúncios novos", "planilha para o Hub" ou cadastro de produtos no ML.
 ---
 
 # Títulos e descrições de anúncios novos (JR Auto Peças)
 
-Você recebe um CSV de produtos novos e entrega uma planilha com **título, descrição, aplicação e medidas** de cada um, mais um **kit de fotos de anúncio** de cada produto, gerado no Syntra Images (conector com as ferramentas `criar_kit_de_fotos`, `ver_kit` e `refazer_fotos`) e baixado para o computador com os nomes do Hub. A subida no ML é feita pelo Hub da loja: **não publique nem edite anúncios no Mercado Livre**.
+Você recebe um CSV de produtos novos e entrega uma planilha com **título, descrição, aplicação e medidas** de cada um, mais um **kit de fotos de anúncio** de cada produto, gerado no Syntra Images (conector com as ferramentas `criar_kit_de_fotos`, `ver_kit` e `refazer_fotos`). As fotos ficam no app do Syntra: **não baixe os kits para o computador** (pedido do usuário). A subida no ML é feita pelo Hub da loja: **não publique nem edite anúncios no Mercado Livre**.
 
 O trabalho de julgamento é seu (ler, pesquisar, escrever o título). A montagem da descrição e as validações são do script `scripts/montar_planilha.py`, que garante o mesmo padrão em todo lote. Não escreva a descrição à mão.
 
@@ -22,7 +22,7 @@ A pesquisa (Passos 2 a 4) é o que mais demora. Em lote grande, divida entre sub
 1. **Divida** o CSV em partes de **5 produtos** e rode **no máximo 5 subagentes ao mesmo tempo** (lote de 50 = 2 rodadas de 5). Cada subagente custa cerca de 130 a 170 mil tokens.
 2. **Cada subagente** (tipo `general-purpose`, em segundo plano) faz só os Passos 2, 3, 3b e 4 das suas 5 peças e grava `dados-parte-<N>.json` em `C:\Users\Usuario\Documents\Claude Project\Planilhas Títulos\tmp\`. Não use o scratchpad: o caminho dele passa de 260 caracteres e o Python não abre.
 3. **O prompt de cada subagente** precisa trazer: o caminho desta SKILL.md para ler inteira; os 5 produtos com código, descrição do Autcom e marca; o significado dos prefixos dos códigos equivalentes (ex.: N = Cobreq, PD = Fras-le, HQ/HQJ = Bendix, RCPT = TRW, SYL = Syl, ECO = Ecopads, NKF = Nakata); como carregar o conector JR Mercado Livre com ToolSearch (`select:` com `ml_buscar_anuncios`, `ml_anuncio`, `ml_api_get` do servidor `mcp__f8303fc9-b23e-4d67-8568-81dc73e375c9__`) e `select:WebSearch,WebFetch`; o caminho exato do JSON de saída; e o que **não** fazer: não chamar o Syntra, não baixar fotos, não rodar `montar_planilha.py`, não publicar nem editar no ML, não fazer login, não mexer na skill. Peça que confira o JSON com py (abre, título até 60, "sobre" com 300 ou mais) e responda em até 200 palavras, uma linha por código: anúncio da loja usado, fonte da aplicação, foto base, `tem_fio`, alertas.
-4. **Você (agente principal)** junta os JSON num só `dados.json`, apaga **só** os `dados-parte-*.json` da pasta `tmp` (nunca outros arquivos de `Planilhas Títulos` ou `Fotos Syntra`), revisa os títulos para manter o mesmo padrão entre as partes, e segue daqui em diante sozinho: Passo 5 (planilha), conferência das fotos base, Passo 6 (Syntra), Passo 7 (download) e Passo 8.
+4. **Você (agente principal)** junta os JSON num só `dados.json`, apaga **só** os `dados-parte-*.json` da pasta `tmp` (nunca outros arquivos de `Planilhas Títulos`), revisa os títulos para manter o mesmo padrão entre as partes, e segue daqui em diante sozinho: Passo 5 (planilha), conferência das fotos base, Passo 6 (Syntra) e Passo 7.
 5. **Fotos e busca no ML pelo navegador:** o WebFetch dá 403 nas fotos e na busca do ML, então tudo isso passa pelo navegador embutido. Mande no prompt as regras da busca no navegador (Passo 2): aba própria, esperar a página carregar, versão `2X-F` da foto, conferir com screenshot, parar no captcha, nada de compra, conta ou dados pessoais. Teste de 29/10/2026: 1 subagente, 3 produtos sem anúncio da loja, 3 min 48 s, sem captcha, 2 fotos boas e 1 produto sem foto limpa (todas com caixa, selo ou marca d'água). Vários subagentes no navegador ao mesmo tempo **ainda não foram testados**: comece com no máximo 2 e, se algum voltar com captcha, peça ao usuário para completar e reenvie só os produtos que faltaram. Antes do Syntra, **abra você mesmo cada `foto_url`** escolhida e confira; foto com carro, texto, caixa ou outras peças não serve.
 6. **Confira `tem_fio`**: avisador de desgaste metálico (lâmina que chia) **não é fio**. `tem_fio: true` só para sensor elétrico com cabo e conector.
 
@@ -176,28 +176,11 @@ Depois que a planilha estiver montada (títulos já validados), gere um kit para
 4. **Refazer:** chame `refazer_fotos` com as `posicoes` das fotos em que a peça saiu diferente (a capa é a 1). Refaça **no máximo 1 vez** por kit. Se continuar diferente, não insista: anote as posições para o usuário revisar no app do Syntra.
 5. Custo: cerca de US$ 0,01 por foto gerada ou refeita (um kit padrão dá cerca de US$ 0,08). Lotes acima de 20 produtos: avise o custo estimado antes de criar.
 
-## Passo 7 — Baixar e renomear as fotos (padrão do Hub)
-Depois da conferência, baixe as fotos de cada kit pronto para o computador, já com o nome que o Hub usa.
-
-1. **Links novos:** chame `ver_kit` de cada kit logo antes de baixar. Os links das fotos valem **cerca de 1 hora**.
-2. **Lista:** grave com a ferramenta Write (não com heredoc no terminal: os links quebram as aspas) um arquivo `lista.txt` no scratchpad, uma linha por foto pronta, no formato `SKU|posição|url`:
-   ```
-   27904|1|https://...supabase.co/.../1-2.jpg?token=...
-   27904|2|https://...supabase.co/.../2-1.jpg?token=...
-   ```
-   Use a posição do kit (capa = 1, artes da loja = 9 e 10) e inclua as 10 fotos. Foto que você marcou para revisão também entra: o usuário decide.
-3. **Baixar:**
-   ```
-   py scripts/baixar_fotos.py lista.txt
-   ```
-   O script salva em `C:\Users\Usuario\Documents\Claude Project\Fotos Syntra\<SKU>\` e renomeia cada foto como **`<SKU>-<posição + 1>`**: a capa vira `27904-2.jpg`, a última arte da loja `27904-11.webp` (padrão do Hub, pedido do usuário: a sequência começa no 2, e todas as fotos levam o traço). As fotos geradas saem em JPG e as 2 artes da loja em WebP.
-4. Se o script avisar falha por link vencido, pegue links novos com `ver_kit` e rode de novo só com as linhas que falharam.
-
-## Passo 8 — Entregar
+## Passo 7 — Entregar
 Entregue o CSV de saída e um resumo curto:
 - quantos produtos estão prontos e quantos têm alerta;
 - os principais motivos dos alertas (ex.: "4 sem aplicação, 12 com medidas estimadas da embalagem");
-- **fotos:** quantos kits ficaram prontos no Syntra e foram baixados (pasta `Fotos Syntra\<SKU>`), quais produtos ficaram sem kit (sem foto base, limite diário, erro do Syntra) e quais kits têm fotos para revisar (SKU, link do kit no app e posições);
+- **fotos:** quantos kits ficaram prontos no Syntra (SKU e link do kit no app), quais produtos ficaram sem kit (sem foto base, limite diário, erro do Syntra) e quais kits têm fotos para revisar (SKU, link do kit no app e posições);
 - lembrete: medidas da **embalagem** estimadas afetam frete e Full, então vale pesar os itens de maior giro.
 
 ## O que a planilha traz
