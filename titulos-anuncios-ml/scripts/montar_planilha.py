@@ -43,9 +43,18 @@ def ler_csv(caminho):
             break
         except UnicodeDecodeError:
             continue
-    primeira = texto.splitlines()[0] if texto else ""
+    linhas_txt = texto.splitlines(keepends=True)
+    # relatórios do Autcom (ex.: Curva ABC) trazem os filtros antes da tabela:
+    # o cabeçalho é a primeira linha com uma coluna de código
+    inicio = 0
+    for i, linha in enumerate(linhas_txt):
+        campos = re.split(r"[;,]", linha)
+        if any(_sem_acento(c).strip().strip('"').lower() in NOMES_CODIGO for c in campos):
+            inicio = i
+            break
+    primeira = linhas_txt[inicio] if linhas_txt else ""
     sep = ";" if primeira.count(";") >= primeira.count(",") else ","
-    leitor = csv.DictReader(texto.splitlines(keepends=True), delimiter=sep)
+    leitor = csv.DictReader(linhas_txt[inicio:], delimiter=sep)
     linhas = list(leitor)
     return list(leitor.fieldnames or []), linhas
 
