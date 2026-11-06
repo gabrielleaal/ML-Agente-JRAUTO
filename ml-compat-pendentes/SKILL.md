@@ -56,6 +56,15 @@ Regras para escolher as versões:
 
 Tabela por anúncio: MLB · título · veículos adicionados (por modelo) · ficou de fora e por quê. Em seguida, uma lista curta de decisões pendentes (anúncios pulados). Não altere nada além de compatibilidade, mesmo que veja outros problemas (preço, ficha, título): só mencione.
 
+## Quando pedirem "também os outros" (cartão "Informe os veículos compatíveis")
+
+Esse cartão (`task=GROUPED_INCOMPLETE_COMPATS`, URL com `filters=OMNI_INCOMPLETE_COMPATIBILITIES|OMNI_INCOMPLETE_POSITION_COMPATIBILITIES|OMNI_PENDING_COMPATIBILITIES`) é mais largo que o dos pendentes e junta três situações. Separe antes de agir com `ml_auditar_anuncios` (12 por chamada):
+- **Tabela zerada** (`compatibilidades: 0`): é o caso desta skill. Siga o fluxo normal. Eles caem no filtro dos pendentes aos poucos, então vale tratá-los antes de o ML pausar.
+- **Já têm compatibilidades** (peças de posição, como sensor ABS, pivô, cubo, kit batente) ou `sugestao_compat_ml: true`: o ML cobra **posição** (dianteira/traseira, esquerdo/direito) ou aceite de sugestão. `ml_compat_adicionar` só grava veículos e não escolhe posição, então não dá para resolver por aqui: devolva a lista para a pessoa ajustar no painel.
+- **Catálogo sem o motor da descrição** (ex.: Del Rey/Pampa 1.8, só existem 1.6): não adicione a versão errada; relate.
+
+Para lotes grandes, a ordem que funcionou: ler a descrição → `ml_compat_veiculos` por modelo/ano/motor → `ml_compat_adicionar` (até 600 IDs por chamada) → no fim, `ml_auditar_anuncios` e reabrir o cartão. Copie os IDs exatamente do retorno do catálogo; um dígito trocado cadastra outro veículo sem dar erro. Peças gêmeas (pastilha convencional e cerâmica, mesmo carro) repetem a mesma lista de veículos. Em "automático" use só versões "Aut."; em radiador de motor turbo ou diesel use só esse motor.
+
 ## Nunca
 
 - Mexer em preço, estoque, título, ficha, descrição, fotos, frete ou promoção.
